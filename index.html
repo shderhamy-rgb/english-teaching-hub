@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My English Learning Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #e0f2fe;
+            --text-main: #0f172a;
+            --hw-bg: #4ade80;
+            --hw-shadow: #16a34a;
+            --game-bg: #facc15;
+            --game-shadow: #ca8a04;
+            --back-bg: #f43f5e;
+            --back-shadow: #e11d48;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Nunito', sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Prevents double scrollbars with iframe */
+        }
+
+        /* --- MAIN MENU VIEW --- */
+        #menu-view {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            color: #1e3a8a;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 0px #ffffff;
+        }
+
+        p.subtitle {
+            font-size: clamp(1rem, 2.5vw, 1.5rem);
+            color: #475569;
+            margin-bottom: 40px;
+        }
+
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .card {
+            flex: 1;
+            min-width: 280px;
+            max-width: 400px;
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 30px 20px;
+            text-decoration: none;
+            color: inherit;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 4px solid #ffffff;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+
+        .card:active {
+            transform: translateY(2px);
+        }
+
+        .icon-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 0 rgba(0,0,0,0.1);
+        }
+
+        .card.homework .icon-circle { background-color: var(--hw-bg); }
+        .card.game .icon-circle { background-color: var(--game-bg); }
+        .card.homework:hover { border-color: var(--hw-bg); }
+        .card.game:hover { border-color: var(--game-bg); }
+
+        .card h2 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            font-size: 1.1rem;
+            color: #64748b;
+            font-weight: 700;
+        }
+
+        /* --- ACTIVITY VIEW (IFRAME) --- */
+        #activity-view {
+            display: none; /* Hidden by default */
+            flex-direction: column;
+            height: 100vh;
+            width: 100vw;
+            background: #ffffff;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        .top-bar {
+            height: 60px;
+            background: #1e293b;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            z-index: 10;
+        }
+
+        .back-btn {
+            background-color: var(--back-bg);
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            font-size: 1.1rem;
+            font-weight: 900;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px 0 var(--back-shadow);
+            transition: all 0.1s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 var(--back-shadow);
+        }
+
+        .back-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 0 0 var(--back-shadow);
+        }
+
+        .activity-title {
+            color: white;
+            margin-left: 20px;
+            font-size: 1.2rem;
+            flex: 1;
+            text-align: center;
+            padding-right: 100px; /* offset to keep centered */
+        }
+
+        iframe {
+            flex: 1;
+            width: 100%;
+            border: none;
+            background: #f8fafc;
+        }
+
+        /* Animations */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        @media (max-width: 600px) {
+            .activity-title { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. MAIN MENU -->
+    <div id="menu-view">
+        <h1>My English Hub</h1>
+        <p class="subtitle">Choose an activity to start learning!</p>
+        
+        <div class="card-container">
+            <!-- Homework Card -->
+            <div class="card homework" onclick="openActivity('homework.html', 'Homework: Learn & Trace')">
+                <div class="icon-circle">📝</div>
+                <h2>Homework</h2>
+                <p>Trace letters and listen to the words.</p>
+            </div>
+
+            <!-- Game Card -->
+            <div class="card game" onclick="openActivity('game.html', 'Play and Practise: Championship Arena')">
+                <div class="icon-circle">🎮</div>
+                <h2>Play & Practise</h2>
+                <p>Test your skills in the arena!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. ACTIVITY VIEWER (IFRAME) -->
+    <div id="activity-view">
+        <div class="top-bar">
+            <button class="back-btn" onclick="closeActivity()">
+                <span>🔙</span> Menu
+            </button>
+            <div class="activity-title" id="dynamic-title">Activity</div>
+        </div>
+        <!-- The iframe loads the separate HTML files here -->
+        <iframe id="activity-frame" src=""></iframe>
+    </div>
+
+    <script>
+        const menuView = document.getElementById('menu-view');
+        const activityView = document.getElementById('activity-view');
+        const iframe = document.getElementById('activity-frame');
+        const titleEl = document.getElementById('dynamic-title');
+
+        function openActivity(filename, title) {
+            // 1. Set the iframe source to the requested file
+            iframe.src = filename;
+            // 2. Update the top bar title
+            titleEl.textContent = title;
+            // 3. Hide the menu and show the iframe viewer
+            menuView.style.display = 'none';
+            activityView.style.display = 'flex';
+        }
+
+        function closeActivity() {
+            // 1. Clear the iframe so audio stops playing
+            iframe.src = '';
+            // 2. Hide the iframe viewer and show the menu
+            activityView.style.display = 'none';
+            menuView.style.display = 'flex';
+        }
+    </script>
+</body>
+</html>
